@@ -124,7 +124,7 @@
     //             var id = data.id;
     //             console.log(id);
     //             var liveActiveName = data.liveActiveName;
-    //             //直播回顾收藏
+    //             //收藏
     //             $('.reviewDetail .collect').on('click',function(){
     //                 if($(this).hasClass('collected')){
     //                     $(this).removeClass('collected').find('img').attr('src','images/collect.png');
@@ -149,7 +149,7 @@
     //                 }
     //             })
 
-    //             //直播回顾点赞
+    //             //点赞
     //             $('.reviewDetail .love').on('click',function(){
     //                 var thumbsUpSum = parseInt($(this).find('.loveNum').text());
     //                 if($(this).hasClass('loved')){
@@ -184,7 +184,7 @@
 </script>
 <script>
     $(function(){
-            //直播详情报名
+            //课程名称报名
             $('.courseDetail .signUp').on('click',function(){
                 $('.signModal,.modal').show();
                 stopMove();
@@ -192,7 +192,7 @@
             //点击报名弹框上面报名
             $('.signModal .submit').on('click',function(){
                 $('.signModal').hide();
-                 $('.success').show();
+                //$('.success').show();
                 // $.post({
                 //     url:baseUrl + '/bank/minShengBank/liveTrailerSignUp',
                 //     contentType: "application/json; charset=utf-8",

@@ -7,6 +7,12 @@ var mobile;
 var gender;
 var email;
 
+//启航
+var packId = 0;
+var userid = 1;
+
+
+
 
 
 //字体大小手机适配   用rem计算
@@ -103,5 +109,7 @@ $('.modalClose').on('click',function(){
     $('.modal').hide();
 })
 
-
+//获取屏幕的高度
+var window_h = window.innerHeight;
+// $('.bookShelf,.startSainling').css('min-height',window_h);
 

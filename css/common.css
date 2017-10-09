@@ -445,20 +445,26 @@ vertical-align: middle;
 
 
 /*启航页面*/
-.startSainling{
-	background: url(../images/startSailing_bg.jpg) no-repeat;
-	background-size:100%;
-}
-
-.sailing_bg{
-	position: fixed;
+.startSainling,.farSailing{
+	background: url(../images/startSailing_bg.jpg) center no-repeat;
+	background-size:100% 100%;
+	height: 100%;
+	position: absolute;
 	top: 0;
 	left:0;
 	right:0;
 	bottom:0;
 	width:100%;
-	height:100%;
-	z-index: -1
+}
+/*远航页面*/
+.startSainling.farSailing{
+	background: url(../images/farSailing_bg.jpg) center no-repeat;
+	background-size:100% 100%;
+}
+/*远航二级页面*/
+.startSainling.farSailing_2{
+	background: url(../images/farSailing2_bg.jpg) center no-repeat;
+	background-size:100% 100%;
 }
 .startSainling a{
 	position: absolute;
@@ -466,20 +472,20 @@ vertical-align: middle;
 	font-size: 0;
 }
 .startSainling a.atitude{
-    top: 1.94rem;
+    top: 1.44rem;
     left: .66rem;
     width: .8rem;
 }
 .startSainling a.culture{
-	top: 3.4rem;
+	top: 2.52rem;
     left: 2.1rem;
 }
 .startSainling a.rest{
-	top: 3.98rem;
+	top: 3rem;
     left: .02rem;
 }
 .startSainling a.knowledge{
-    top: 4.45rem;
+    top: 3.4rem;
     left: 2.65rem;
 }
 .startSainling a.quality{
@@ -499,7 +505,7 @@ vertical-align: middle;
 	position: absolute;
 	width: .36rem;
 	left: .05rem;
-	top: .12rem;
+	top: .06rem;
 }
 .topbar .userName{
     background: rgba(0,0,0,.4);
@@ -548,21 +554,21 @@ vertical-align: middle;
 }
 .startSainling a.operation{
 	width: .8rem;
-    top: 1.3rem;
+    top: .85rem;
     left: .55rem;
 }
 .startSainling a.retail{
-    top: 1.8rem;
+    top: 1.38rem;
     right: .3rem;
     width: .8rem;
 }
 .startSainling a.department{
-    top: 3.2rem;
+    top: 2.35rem;
     left: .3rem;
 }
 .startSainling a.finacial{
-    bottom: 1.55rem;
-    right: .3rem;
+    bottom: 1.3rem;
+    right: .28rem;
     width: .8rem;
 }
 .startSainling a.company{
@@ -599,21 +605,21 @@ vertical-align: middle;
 	margin-bottom: 0;
 }
 .startSainling a.advance{
-    top: 1.3rem;
+    top: 1.03rem;
     right: 0;
     width: 1.22rem;
 }
 .startSainling a.far_rest{
-    top: 3.1rem;
+    top: 2.45rem;
     right: .1rem;
     width: 1.22rem;
 }
 .startSainling a.powerful{
-    top: 3.4rem;
+    top: 2.55rem;
     left: .75rem;
 }
 .startSainling a.business{
-    bottom: .25rem;
+    bottom: .2rem;
     left: .6rem;
     width: 1.22rem;
 }
@@ -639,13 +645,15 @@ vertical-align: middle;
 }
 .courseList .courseList_container>h3.right a{
 	color:#999;
-}
-.courseList .courseList_container>h3.right a span,.courseList .courseList_container>h3.right a img{
 	vertical-align: middle;
 }
+.courseList .courseList_container>h3.right a span{
+	vertical-align: middle;
+	display: inline-block;
+}
 .courseList .courseList_container>h3.right a img{
-	width:.09rem;
-	margin-left: .05rem;
+    width: .09rem;
+    margin-left: .05rem;
 }
 
 /*每天一刻钟*/
@@ -692,8 +700,15 @@ vertical-align: middle;
 }
 
 /*刊物*/
+.bookShelf{
+	background:url(../images/book_bg.png) repeat-y;
+	background-size:cover;
+	height: 100%;
+	width: 100%;
+	margin-top: .4rem;
+}
 .booksList{
-	margin: .28rem auto;
+	margin: 0rem auto;
 	width: 77.8%;
 }
 .booksList li{
@@ -702,8 +717,8 @@ vertical-align: middle;
 	width: 40%;
 	box-sizing:border-box;
 	font-size: 0;
-	margin:0 10% .45rem 0;
-	display: inline-block;
+	margin:0 20% .3rem 0;
+	float: left;
 	box-shadow: -10px 0px 40px 1px #333;
 }
 .booksList li:nth-child(2n){

@@ -16,12 +16,7 @@
     <link rel="stylesheet" href="css/common.css">
 </head>
 <body>
-<!--     <header>
-        <a><img src="images/back.png" alt="" class='back'>空白页</a>
-    </header> -->
-
 <div class="startSainling">
-	<img src="images/startSailing_bg.jpg" alt="" class='sailing_bg'>
     <!-- 导航栏 -->
     <div class='topbar'>
         <img src="images/head.jpg" alt="" class='head'>
@@ -65,5 +60,29 @@
 <script src='js/jquery-weui.js'></script>
 <script src='js/way.js'></script>
 <script src='js/common.js'></script> 
+<script>
+    $(function(){
+
+        //获取数据
+        $.get({
+            url:baseUrl + '/bank/getCourse/getInit?packId='+packId+'&userId='+userid,
+            success:function(data){
+                console.log(data);
+            }
+
+        })
+
+
+
+
+
+
+
+    })
+</script>
+
+
+
+
 </body>
 </html>
