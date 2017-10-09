@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>每天一刻钟</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta name="viewport" content="initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no">
+    <meta http-equiv="Cache-Control" content="no-siteapp" />
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="format-detection" content="telephone=no, email=no">
+    <meta name="wap-font-scale" content="no">
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="screen-orientation" content="portrait">
+    <meta name="x5-orientation" content="portrait">
+    <link rel="stylesheet" href="css/common.css">
+</head>
+<body>
+    <header>
+        <a><img src="images/back.png" alt="" class='back'>每天一刻钟</a>
+    </header>
+
+    <div class="slideBox content">
+        <ul class="slideList">
+            <li class='active'><a href=""><img src="images/pic.jpg" alt=""></a></li>
+            <li><a href=""><img src="images/pic.jpg" alt=""></a></li>
+            <li><a href=""><img src="images/pic.jpg" alt=""></a></li>
+        </ul>
+        <ul class='slidePot'>
+            <li class='active'></li>
+            <li></li>
+            <li></li>
+        </ul>
+    </div>
+    <div id="review" class='review loadlList everyday'>
+        <div id="responsive-grid" class="responsive-grid">
+            <ul>
+                 <li class='clearfix'  way-repeat='reviewList'>
+                     <a href="">
+                        <div class="imgContainer left">
+                            <img src="images/play.png" alt="" class='play'>
+                            <img src="images/review.png" alt="" way-data='imgUrl'> 
+                        </div>
+                        <div class='right_info'>
+                            <h3 way-data='subject'>银行中高管综合能力研修项目</h3>
+                            <div>
+                                <p>通用/条信名称</p> 
+                                <p><img src="images/time.png" alt=""><span way-data='startTime'></span></p>
+                            </div>
+                        </div>
+                     </a>
+                 </li>
+            </ul>
+        </div>
+        <div id="weui-loadmore" class='weui-loadmore'>
+            加载更多
+        </div>
+    </div>
+
+
+<script src='js/jquery.min.js'></script>
+<script src='js/common.js'></script> 
+<script>
+$(function(){
+    //设置自动轮播的时间
+    timer = setInterval(autoRun,2000);
+    $('.slidePot li').on('click',function(){
+        var index = $(this).index();
+        $(this).addClass('active').siblings().removeClass('active').parent('.slidePot').siblings('.slideList').find('li').eq(index).addClass('active').siblings().removeClass('active');
+    });
+    //设置鼠标移进停止轮播
+    $('.slideBox').on('touchstart',function(){
+        clearInterval(timer);
+    }).on('touchend',function(){
+        timer = setInterval(autoRun,2000)
+    })
+})
+function autoRun(){
+    var picLength = $('.slideList li').length - 1;
+    var index =$('.slidePot li.active').index();
+        index++;
+        if(index > picLength){
+            index = 0
+        }
+    $('.slidePot li').eq(index).addClass('active').siblings().removeClass('active').parent('.slidePot').siblings('.slideList').find('li').eq(index).addClass('active').siblings().removeClass('active');
+}
+    
+</script>
+</body>
+</html>

@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>评论</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta name="viewport" content="initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no">
+    <meta http-equiv="Cache-Control" content="no-siteapp" />
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="format-detection" content="telephone=no, email=no">
+    <meta name="wap-font-scale" content="no">
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="screen-orientation" content="portrait">
+    <meta name="x5-orientation" content="portrait">
+	  <link rel="stylesheet" href="css/common.css">
+    <link rel="stylesheet" href="css/jquery-weui.min.css">
+    <link rel="stylesheet" href="css/weui.min.css">
+</head>
+<body>
+	<header>
+        <a><img src="images/back.png" alt="" class='back'>评论</a>
+    </header>
+      <div class="content evalute" style=no>
+          <textarea name="" id="" cols="30" rows="5" placeholder='请输入评论内容' class='evaluteContainer'></textarea>
+          <p class='evalute'>
+<!--             <a class='submit cancel_evalute'>
+              <img src="images/cancel_evalute.png" alt="">
+            </a> -->
+            <a class='submit submit_evalute'>
+              <img src="images/submit_evalute.png" alt="">
+            </a>
+          </p>
+      <div id="evalute" class='loadlList'>
+          <div id="responsive-grid" class='responsive-grid'>
+              <ul class='evaluteList'>
+                  <li way-repeat='evalutes'>
+                      <p class='clearfix'><span class='left name' way-data='userName'></span><span class='right time'>发表于<span way-data='commentTime'></span></span></p>
+                      <p class='evalueInfo' way-data='commentContent'></p>
+                      <p class='agree'><img src="images/love.png" alt=""><span way-data='commentThumbsUp' class='loveNum'></span></p>
+                  </li>
+              </ul>
+        </div>
+        <div id="weui-loadmore" class='weui-loadmore'>加载更多</div>
+      </div>
+    </div>
+<script src='js/jquery.min.js'></script>
+<script src='js/storage.js'></script>
+<script src='js/request.js'></script>
+<script src='js/jquery.uiAjaxPaging.js'></script>
+<script src='js/jquery-weui.js'></script>
+<script src='js/way.js'></script>
+<!-- <script src='js/validate-methods.js'></script> -->
+<script src='js/common.js'></script> 
+<script>
+
+$(function(){
+  
+  //获取并绑定数据
+  var listdata = [];
+  //评论所需数据
+  var evluteData = [];
+  var liveActiveNum = getQueryString('liveActiveNum');
+  var liveActiveName = decodeURI(getQueryString('liveActiveName'));
+  var category = getQueryString('categoryNum');
+
+
+  //取消评论
+  $('.cancel_evalute').on('click',function(){
+      $('.evaluteContainer').val('');
+  });
+
+var ajaxpaging = $.ajaxPaging({
+      listloaded: 'weui-loadmore',
+      pageSize: 20,
+      url: '/bank/minShengBank/getComment',
+      params: {liveActiveNum:liveActiveNum},
+      pagerSuccessCallback: function (data, total) {
+          for(var i = 0;i<data.length;i++){
+              data[i].commentTime = formatDate(data[i].commentTime);
+              //如果点赞数为空则设置为0
+              if(data[i].commentThumbsUp == 'undefined' || !data[i].commentThumbsUp){
+                  data[i].commentThumbsUp = 0;
+              }
+              listdata.push(data[i]);
+              console.log(data[i].userName)
+          }
+          console.log('我是数据：' +JSON.stringify(data));
+          way.set('evalutes',listdata);
+
+
+
+          //提交评论内容
+          $('.submit_evalute').on('click',function(){
+              var content = $('.evaluteContainer').val();
+              console.log(content);
+              var id = getQueryString('id');
+                if(content !== ''){
+                  $.post({
+                      url:baseUrl + '/bank/minShengBank/commentContent',
+                      data:{
+                        id:id,
+                        userid:userid,
+                        name:name,
+                        commentContent:content,
+                        liveActiveNum:liveActiveNum,
+                        liveActiveName:liveActiveName,
+                        commentUserid:commentUserid
+                      },
+                      success:function(data){
+                        $('.evaluteContainer').val('');
+                        alert('评论成功');
+                        console.log(data);
+                      }
+                  })
+                }
+          });
+          //设置点赞功能
+          var loveNum = $('.evaluteList li');
+          loveNum.on('click',function(){
+            var agree = $(this).find('.agree'); 
+              var index = $(this).index();
+              console.log(data[index].userName);
+              var thumbsUpSum = parseInt(agree.find('.loveNum').text());
+              console.log(thumbsUpSum);
+              if(agree.hasClass('loved')){
+                  agree.removeClass('loved').find('img').attr('src','images/love.png');
+                  thumbsUpSum -= 1;
+                  agree.find('.loveNum').text(thumbsUpSum);
+              }else{
+                  var that = this;
+                  $.post({
+                       url:baseUrl + '/bank/minShengBank/userCommentThumbsUp',
+                        data:{
+                        categoryNum : category,
+                        liveActiveNum : data[index].liveActiveNum,
+                        liveActiveName : data[index].liveActiveName,
+                        userid : userid,
+                        name:name,
+                        commentUserid:data[index].commentUserid,
+                        commentUserName:data[index].commentUserName
+                        },
+                      success:function(data){
+                          console.log(data);
+                          if(data.msg == '请求数据成功!'){
+                              agree.addClass('loved').find('img').attr('src','images/loved.png');
+                              thumbsUpSum += 1;
+                              console.log($(that).find('.loveNum').text());
+                              agree.find('.loveNum').text(thumbsUpSum);
+                          }
+                      }
+                  })
+              }
+          })
+      }
+  });
+
+  var loading = false; //状态标记
+  $("#evalute").infinite(50).on("infinite", function () {
+      if (loading) return;
+      loading = true;
+      if (!ajaxpaging.notMore) {
+          ajaxpaging.nextPage();
+          loading = false;
+
+      }
+  });
+
+//设置加载容器的高度
+var textareaH = parseInt($('textarea').height());
+console.log(textareaH)
+var evaluteP = parseInt($('.evaluteContainer+.evalute').height());
+var scrollHeight = parseInt($(document).height())-textareaH-evaluteP-20-15;
+console.log(scrollHeight)
+$('.loadlList').height(scrollHeight+'px');
+  })//end of jquery
+</script>
+
+
+
+
+</body>
+</html>

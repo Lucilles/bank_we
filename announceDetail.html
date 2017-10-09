@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>直播预告</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta name="viewport" content="initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no">
+    <meta http-equiv="Cache-Control" content="no-siteapp" />
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="format-detection" content="telephone=no, email=no">
+    <meta name="wap-font-scale" content="no">
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="screen-orientation" content="portrait">
+    <meta name="x5-orientation" content="portrait">
+	<link rel="stylesheet" href="css/common.css">
+</head>
+<body>
+	<header>
+        <a><img src="images/back.png" alt="" class='back'>直播预告</a>
+    </header>
+    <div class="announceDetail content" way-scope='response'>
+        <div class="top">
+            <img src="" alt=""  way-data='imgUrl'>
+            <h2 way-data="subject"></h2>
+            <div class="flexbox">
+                <div class="left"><span way-data="issuserName"></span>(<span way-data="issuserIntroduction"></span>)</div>
+                <div class="right" id="issueTime"></div>
+            </div>
+            <div class='submit'><img src="images/submit.png" alt="" class='signUpStatus'></div>
+        </div>
+        <div class="tit">课程简介</div>
+        <div class="info" way-data="introduction">
+            
+        </div>
+        <div class="tit">讲师介绍</div>
+        <div class="flexbox mentor">
+            <div class='img'><img src="" alt="" way-data='issueImgURL'></div>
+            <div class="right">
+                <h3 way-data="host"></h3>
+                <p way-data="hostIntroduction"></p>
+            </div>
+        </div>
+    </div>
+
+
+<!-- 报名框 -->
+<div class="modal"></div>
+<div class="signModal" way-scope='response'>
+    <h3>报名</h3>
+    <p>该课程需要消费您<span way-data='integral'>5</span>积分</p>
+    <p>学完该课程您将获得<span way-data='learnedIntegral'>5</span>积分</p>
+    <div class='submit'><img src="images/submit.png" alt=""></div>
+    <span class='modalClose'>x</span>
+</div>
+
+<!-- 提交成功弹框 -->
+<div class="submitedModal success">
+    <h3>报名已提交</h3>
+    <h3 class=''>等待审核</h3>
+    <span class='modalClose'>x</span>
+</div>
+
+<!-- 提交失败弹框 -->
+<div class="submitedModal failed">
+    <h3>提交失败</h3>
+    <h3 class=''>请稍后再试</h3>
+    <span class='modalClose'>x</span>
+</div>
+
+<script src='js/jquery.min.js'></script>
+<script src='js/way.js'></script> 
+<script src='js/common.js'></script> 
+<script>
+$(function(){
+    var id = getQueryString('id');
+    console.log(id);
+        $.get({
+        url:baseUrl + '/bank/minShengBank/getLiveDetailsInfo?id='+ id,
+        success:function(data){
+            var data = data.data[0];
+            console.log(data);
+            if(data.issuserName ==undefined){
+                $('.announceDetail .top .flexbox').html('');
+            }
+
+            //根据数据显示不同的报名状态
+            var signUpStatus = data.signUpStatus;
+            console.log(signUpStatus);
+            if(signUpStatus == 0){
+                $('.signUpStatus').parent().addClass('signUp')
+                $('.signUpStatus').attr('src','images/submit.png');
+            }
+            if(signUpStatus == 1){
+                $('.signUpStatus').attr('src','images/submited.png');
+            }
+            if(signUpStatus == 2){
+                $('.signUpStatus').attr('src','images/submiting.png');
+            }
+            if(signUpStatus == 3){
+                $('.signUpStatus').attr('src','images/sub_fail.png');
+            }
+            if(signUpStatus == 4){
+                $('.signUpStatus').attr('src','images/living.png');
+            }
+
+            //绑定数据到页面上
+            way.set('response',data);
+
+            //设置直播时间
+            var startTime = formatDate(data.startTime);
+            var endTime = formatDate(data.endTime);
+            endTime = endTime.substr(endTime.length-5);
+            var formatTime = startTime +'-' + endTime;
+            $('#issueTime').text(formatTime);
+
+            //直播详情报名
+            $('.announceDetail .signUp').on('click',function(){
+                $('.signModal,.modal').show();
+                stopMove();
+            });
+            //点击报名弹框上面报名
+            $('.signModal .submit').on('click',function(){
+                $('.signModal').hide();
+                $.post({
+                    url:baseUrl + '/bank/minShengBank/liveTrailerSignUp',
+                    contentType: "application/json; charset=utf-8",
+                    data:JSON.stringify({
+                        "userNum":data.userNum,
+                        "userName":data.userName,
+                        "id":data.id,
+                        "liveActiveNum":data.liveActiveNum
+                    }),
+                    success:function(data){
+                        console.log(data);
+                        if(data.msg == '请求数据成功!'){
+                            $('.success').show();
+                            $('.signUpStatus').parent().removeClass('signUp').off('click');
+                        }
+                    },
+                    error:function(err){
+                        $('.failed').show();
+                        startMove();
+                        console.log(err);
+                    }
+                })
+            });
+        }
+    })
+}) 
+</script>
+</body>
+</html>

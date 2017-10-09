@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>正在直播</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta name="viewport" content="initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no">
+    <meta http-equiv="Cache-Control" content="no-siteapp" />
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="format-detection" content="telephone=no, email=no">
+    <meta name="wap-font-scale" content="no">
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="screen-orientation" content="portrait">
+    <meta name="x5-orientation" content="portrait">
+	<link rel="stylesheet" href="css/common.css">
+</head>
+<body>
+	<header>
+        <a><img src="images/back.png" alt="" class='back'>正在直播</a>
+    </header>
+    <div class="announceDetail content" way-scope='response'>
+        <div class="top">
+            <img src="" alt=""  way-data='imgUrl'>
+            <h2 way-data="subject"></h2>
+            <div class="flexbox">
+                <div class="left"><span way-data="issuserName"></span>(<span way-data="issuserIntroduction"></span>)</div>
+                <div class="right" id="issueTime"></div>
+            </div>
+            <div class='submit'><img src="images/living.png" alt="" class=''></div>
+        </div>
+        <div class="tit">课程简介</div>
+        <div class="info" way-data="introduction">
+            
+        </div>
+        <div class="tit">讲师介绍</div>
+        <div class="flexbox mentor">
+            <div class='img'><img src="" alt="" way-data='issueImgURL'></div>
+            <div class="right">
+                <h3 way-data="host"></h3>
+                <p way-data="hostIntroduction"></p>
+            </div>
+        </div>
+    </div>
+
+<script src='js/jquery.min.js'></script>
+<script src='js/way.js'></script> 
+<script src='js/common.js'></script> 
+<script>
+$(function(){
+    var id = getQueryString('id');
+    console.log(id);
+        $.get({
+        url:baseUrl + '/bank/minShengBank/getLiveDetailsInfo?id='+ id,
+        success:function(data){
+            var data = data.data[0];
+            console.log(data);
+            if(data.issuserName ==undefined){
+                $('.announceDetail .top .flexbox').html('');
+            }
+
+            //绑定数据到页面上
+            way.set('response',data);
+
+            //设置直播时间
+            var startTime = formatDate(data.startTime);
+            var endTime = formatDate(data.endTime);
+            endTime = endTime.substr(endTime.length-5);
+            var formatTime = startTime +'-' + endTime;
+            $('#issueTime').text(formatTime);
+        }
+    })
+}) 
+</script>
+</body>
+</html>
