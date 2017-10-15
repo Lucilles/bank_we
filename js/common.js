@@ -1,5 +1,5 @@
 //以下字段为以后从cookie从获取的信息
-var userid = 'lvcheng';
+var userid = 2;
 var name = '张三';
 var department;
 var position;
@@ -76,6 +76,7 @@ $('header .back').on('click',function(){
 //通用地址
 var baseUrl = 'http://101.132.123.248:80';
 
+
 // 时间格式化
 function formatDate(now) {
     var now = new Date(now);
@@ -111,5 +112,5 @@ $('.modalClose').on('click',function(){
 
 //获取屏幕的高度
 var window_h = window.innerHeight;
-// $('.bookShelf,.startSainling').css('min-height',window_h);
+//$('.startSainling').css('height',window_h);
 

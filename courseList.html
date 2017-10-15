@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>课程详情</title>
+    <title>课程名称</title>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
     <meta name="viewport" content="initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no">
     <meta http-equiv="Cache-Control" content="no-siteapp" />
@@ -18,113 +18,82 @@
     <link rel="stylesheet" href="css/weui.min.css">
 </head>
 <body>
-	<header>
-        <a><img src="images/back.png" alt="" class='back'>课程详情</a>
-    </header>
-
-<div class="courseList content">
+<div class="courseList list_sail" style='display:none'>
     <div class="courseList_container required">
         <h3>必修</h3>
         <ul>
-            <li><a href="courseDetail.html">
-                <img src="images/pic.jpg" alt="">
-                <h4>银行高管综合研修项目</h4>
-            </a></li>
-            <li><a href="">
-                <img src="images/pic.jpg" alt="">
-                <h4>银行高管综合研修项目</h4>
-            </a></li>
-            <li><a href="">
-                <img src="images/pic.jpg" alt="">
-                <h4>银行高管综合研修项目</h4>
-            </a></li>
+            <li way-repeat='required'>
+                <a href="" way-data='targetURL'>
+                    <img src="" alt="" way-data='course_img'>
+                    <h4 way-data='course_name'></h4>
+                </a>
+            </li>
         </ul>
     </div>
     <div class="courseList_container not_required">
         <h3>选修</h3>
         <ul>
-            <li><a href="">
-                <img src="images/pic.jpg" alt="">
-                <h4>银行高管综合研修项目</h4>
-            </a></li>
-            <li><a href="">
-                <img src="images/pic.jpg" alt="">
-                <h4>银行高管综合研修项目</h4>
-            </a></li>
-            <li><a href="">
-                <img src="images/pic.jpg" alt="">
-                <h4>银行高管综合研修项目</h4>
-            </a></li>
+            <li way-repeat='unRequired'>
+                <a href=""  way-data='targetURL'>
+                    <img src="" alt="" way-data='course_img'>
+                    <h4 way-data='course_name'></h4>
+                </a>
+            </li>
         </ul>
     </div>
-
-
-
-
 </div>
 
-
-
-
-
-
-
-
-
+<div class="courseList list_train" style='display:none'>
+    <div class="courseList_container required">
+        <ul>
+            <li way-repeat='trainList'>
+                <a href="" way-data='targetURL'>
+                    <img src="" alt="" way-data='course_img'>
+                    <h4 way-data='course_name'></h4>
+                </a>
+            </li>
+        </ul>
+    </div>
+</div>
 
 <script src='js/jquery.min.js'></script>
-<script src='js/storage.js'></script>
-<script src='js/request.js'></script>
-<script src='js/jquery.uiAjaxPaging.js'></script>
-<script src='js/jquery-weui.js'></script>
-<!-- <script src='js/way.js'></script> -->
-<!-- <script src='js/validate-methods.js'></script> -->
+<script src='js/way.js'></script>
 <script src='js/common.js'></script> 
 
 <script>
+$(function(){
+    var parentPackId = getQueryString('parentPackId');
+    //获取数据
+    $.get({
+        url:baseUrl + '/bank/getCourseController/getCourseList?parentPackId='+ parentPackId +'&userId='+userid,
+        success:function(data){
+            var data = data.data;
+            console.log(data);
+            var requiredList=[];
+            var unRequiredList = [];
+            var trainList = [];
+            console.log(requiredList);
+            for(var i = 0;i<data.length;i++){
+                if(data[i].course_group=='必修'||data[i].course_group =='选修'){
+                    $('.list_sail').show();
+                    if(data[i].course_group == '必修'){
+                        requiredList.push(data[i]);
+                    }else if(data[i].course_group == '选修'){
+                        unRequiredList.push(data[i]);
+                    }
+                }else{
+                    $('.list_train').show();
+                    trainList.push(data[i]);
+                }
+            } 
+            console.log(requiredList)           
+            way.set('required',requiredList);
+            way.set('unRequired',unRequiredList);
+            way.set('trainList',trainList);
+        }
+    })
+})
 
-    //设置加载容器的高度
-    // var scrollHeight = $(document).height();
-    // console.log(scrollHeight);
-    // $('.loadlList').height(scrollHeight);
-    
-    //  var listdata=[];
-    //   var ajaxpaging = $.ajaxPaging({
-    //         listloaded: 'weui-loadmore',
-    //         pageSize: 5,
-    //         url: 'bank/minShengBank/getLiveStatusList',
-    //         params: {status:2},
-    //         pagerSuccessCallback: function (data) {
-    //             console.log('我是数据：' +JSON.stringify(data));
-    //             for(var i = 0;i<data.length;i++){
-    //                 data[i].startTime = formatDate(data[i].startTime);
-    //                 listdata.push(data[i]);
-    //             }
-    //             //way.set('announceList',listdata);
-    //             //循环绑定相应详情页链接
-    //             var detailsList = $('.announce li a');
-    //             for(var i = 0;i<listdata.length;i++){
-    //                 detailsList[i].href = 'announceDetail.html?id='+listdata[i].id;
-    //             }
-    //         }
-    //     });
-
-    //     var loading = false; //状态标记
-    //     $("#announce").infinite(50).on("infinite", function () {
-    //         if (loading) return;
-    //         loading = true;
-    //         if (!ajaxpaging.notMore) {
-    //             ajaxpaging.nextPage();
-    //             loading = false;
-    //             //循环绑定相应详情页链接
-    //             // console.log(listdata);
-    //             var detailsList = $('.announce li a');
-    //             for(var i = 0;i<listdata.length;i++){
-    //                 detailsList[i].href = 'announceDetail.html?id='+listdata[i].id;
-    //             }
-    //         }
-
-    //     });
 
 </script>
 

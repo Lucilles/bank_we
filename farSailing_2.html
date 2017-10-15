@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>领航</title>
+    <title>远航</title>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
     <meta name="viewport" content="initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no">
     <meta http-equiv="Cache-Control" content="no-siteapp" />
@@ -16,50 +16,102 @@
     <link rel="stylesheet" href="css/common.css">
 </head>
 <body>
-<!--     <header>
-        <a><img src="images/back.png" alt="" class='back'>空白页</a>
-    </header> -->
-
 <div class="startSainling farSailing_2">
-<!-- 	<img src="images/farSailing2_bg.jpg" alt="" class='sailing_bg'> -->
+	<img src="images/farSailing2_bg.jpg" alt="" class='sailing_bg'>
     <!-- 导航栏 -->
     <div class='topbar'>
         <img src="images/head.jpg" alt="" class='head'>
         <span class='userName'>注册用户名</span>
-        <span class='stars'>999999</span>
+        <span class='stars' way-data='userIntergral.data'></span>
     </div>
-	<a href="" class='advance'>
-        <img src="images/advance.png" alt="">
-        <img src="images/lock.png" alt="" class='lock'>
-    </a>
-	<a href="" class='far_rest'>
-        <img src="images/far_rest.png" alt="" class='culture'>
-        <img src="images/lock.png" alt="" class='lock'>
-    </a>
-	<a href="" class='powerful'>
-        <img src="images/powerful.png" alt="">
-        <img src="images/lock.png" alt="" class='lock'>
-    </a>
-	<a href="" class='business'>
+    <a href="" class='business'>
         <img src="images/business.png" alt="">
-        <img src="images/lock.png" alt="" class='lock'>
+        <img src="" alt="" class='lock'>
     </a>
-    <a href="" class='strategy'><img src="images/Strategy.png" alt=""></a>
-    <a href="" class='rank'><img src="images/rank.png" alt=""></a>
+    <a href="" class='advance'>
+        <img src="images/advance.png" alt="">
+        <img src="" alt="" class='lock'>
+    </a>
+    <a href="" class='powerful'>
+        <img src="images/powerful.png" alt="">
+        <img src="" alt="" class='lock'>
+    </a>
+    <div>
+        <a href="" class='far_rest'>
+            <img src="images/far_rest.png" alt="">
+            <img src="" alt="" class='lock'>
+        </a>
+    </div>
+    <div>
+        <a href="" class='strategy'><img src="images/Strategy.png" alt=""></a>
+        <a href="" class='rank'><img src="images/rank.png" alt=""></a>
+    </div>
 </div>
 
-
-
-
-
-
-
 <script src='js/jquery.min.js'></script>
-<script src='js/storage.js'></script>
-<script src='js/request.js'></script>
-<script src='js/jquery.uiAjaxPaging.js'></script>
-<script src='js/jquery-weui.js'></script>
 <script src='js/way.js'></script>
 <script src='js/common.js'></script> 
+
+<script>
+    $(function(){
+        //获取用户积分
+        $.get({
+            url:baseUrl + '/bank/minShengBank/getUserIntergral?userId='+userid,
+            success:function(data){
+                console.log(data);
+                way.set('userIntergral',data);
+            }
+        })
+        var parentPackId = getQueryString('parentPackId');
+        //绑定实战模拟链接
+        var trainUrl = 'virtualTrain.html?parentPackId='+parentPackId;
+        $('.far_rest').attr('href',trainUrl);
+
+        //获取数据
+        $.get({
+            url:baseUrl + '/bank/getCourseController/getInitSail?parentPackId=' + parentPackId +'&userId='+userid,
+            success:function(data){
+                console.log(data);
+                var data = data.data;
+                //获取页面上的模块
+                var startList = $('.farSailing_2>a');
+                for(var i = 0;i<data.length;i++){
+
+                    //模块绑定对应的链接，根据sortid绑定并判断是否待开启
+                    switch (data[i].pack_id){
+                        case 18:
+                        console.log(data[i]);
+                            if(data[i].status_img == ''){
+                                $('.business').attr('href',data[i].targetURL); 
+                            }else{
+                                $('.business').attr('href','#');
+                                $('.business img.lock').attr('src',data[i].status_img);
+                            }
+                            continue;
+                        case 20:
+                        console.log(data[i]);
+                            if(data[i].status_img == ''){
+                                $('.advance').attr('href',data[i].targetURL); 
+                            }else{
+                                $('.advance').attr('href','#');
+                                $('.advance img.lock').attr('src',data[i].status_img);
+                            }
+                            continue;
+                        case 19:
+                        console.log(data[i]);
+                            if(data[i].status_img == ''){
+                                $('.powerful').attr('href',data[i].targetURL); 
+                            }else{
+                                $('.powerful').attr('href','#');
+                                $('.powerful img.lock').attr('src',data[i].status_img);
+                            }
+                            continue;
+                    }
+                }
+            }
+
+        })
+    })
+</script>
 </body>
 </html>

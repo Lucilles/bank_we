@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>实战模拟</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta name="viewport" content="initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no">
+    <meta http-equiv="Cache-Control" content="no-siteapp" />
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="format-detection" content="telephone=no, email=no">
+    <meta name="wap-font-scale" content="no">
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="screen-orientation" content="portrait">
+    <meta name="x5-orientation" content="portrait">
+    <link rel="stylesheet" href="css/common.css">
+    <style>
+        body{
+            background: #fff;
+        }
+    </style>
+</head>
+<body>
+<div class="leadSainling">
+    <div class="courseList">
+        <div class="courseList_container required clearfix"  way-repeat='virtualTrain'>
+            <h3 class='left' way-data='course_group'></h3><h3 class='right'><a href="" class='more' way-data='moreURL'><span>更多</span><img src="images/right.png" alt=""></a></h3>
+            <ul>
+                <li><a href="" way-data='targetURL'>
+                    <img src="" alt="" way-data='course_img'>
+                    <h4 way-data='course_name'></h4>
+                </a></li>
+            </ul>
+        </div>
+    </div>
+</div>
+<script src='js/jquery.min.js'></script>
+<script src='js/way.js'></script>
+<script src='js/common.js'></script> 
+
+<script>
+    $(function(){
+        var parentPackId = getQueryString('parentPackId');
+        //获取数据
+        $.post({
+            url:baseUrl + '/bank/getCourseController/getNewCourseList?parentPackId='+parentPackId+'&userId='+userid,
+            success:function(data){
+                var data = data.data;
+                console.log(data);
+                way.set('virtualTrain',data);
+            }
+        })
+    })
+</script>
+
+
+
+
+
+
+
+
+
+</body>
+</html>

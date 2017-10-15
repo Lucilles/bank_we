@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>直播预告</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta name="viewport" content="initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no">
+    <meta http-equiv="Cache-Control" content="no-siteapp" />
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="format-detection" content="telephone=no, email=no">
+    <meta name="wap-font-scale" content="no">
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="screen-orientation" content="portrait">
+    <meta name="x5-orientation" content="portrait">
+	<link rel="stylesheet" href="css/common.css">
+</head>
+<body>
+    <div class="announceDetail" way-scope='response'>
+        <div class="top">
+            <img src="" alt=""  way-data='img_url'>
+            <h2 way-data="live_active_name"></h2>
+            <div class="flexbox">
+                <div class="left"><span way-data="issuser_name"></span>(<span way-data="issuser_introduction"></span>)</div>
+                <div class="right" id="issueTime"></div>
+            </div>
+            <div class='submit'><img src="images/living.png" alt="" class='signUpStatus'></div>
+        </div>
+        <div class="tit">课程简介</div>
+        <div class="info" way-data="introduction">
+            
+        </div>
+        <div class="tit">讲师介绍</div>
+        <div class="flexbox mentor">
+            <div class='img'><img src="" alt="" way-data='issuser_imgURL'></div>
+            <div class="right">
+                <h3 way-data="teacher_name"></h3>
+                <p way-data="teacher_desc"></p>
+            </div>
+        </div>
+    </div>
+
+
+<!-- 报名框 -->
+<div class="modal"></div>
+<div class="signModal" way-scope='response'>
+    <h3>报名</h3>
+    <p>该课程需要消费您<span way-data='intergral'></span>积分</p>
+    <p>学完该课程您将获得<span way-data='learned_intergral'></span>积分</p>
+    <div class='submit'><img src="images/submit.png" alt=""></div>
+    <span class='modalClose'>x</span>
+</div>
+
+<!-- 提交成功弹框 -->
+<div class="submitedModal success">
+    <h3>报名已提交</h3>
+    <h3 class=''>等待审核</h3>
+    <span class='modalClose'>x</span>
+</div>
+
+<!-- 提交失败弹框 -->
+<div class="submitedModal failed">
+    <h3>提交失败</h3>
+<!--     <h3 class=''>请稍后再试</h3> -->
+    <span class='modalClose'>x</span>
+</div>
+
+<script src='js/jquery.min.js'></script>
+<script src='js/way.js'></script> 
+<script src='js/common.js'></script> 
+<script>
+$(function(){
+    var id = getQueryString('id');
+    console.log(id);
+        $.get({
+        url:baseUrl + '/bank/minShengBank/getLiveDetailsInfo?id='+ id+'&userId='+userid,
+        success:function(data){
+            var data = data.data[0];
+            console.log(data);
+            if(data.issuser_name ==undefined){
+                $('.announceDetail .top .flexbox').html('');
+            }
+
+            //根据signUpstatus字段数据显示不同的报名状态
+            var signUpStatus = data.signUpstatus;
+            console.log(signUpStatus);
+            if(signUpStatus == 0){
+                $('.signUpStatus').parent().addClass('signUp')
+                $('.signUpStatus').attr('src','images/submit.png');
+            }
+            if(signUpStatus == 1){
+                $('.signUpStatus').attr('src','images/submited.png');
+            }
+            if(signUpStatus == 2){
+                $('.signUpStatus').attr('src','images/submiting.png');
+            }
+            if(signUpStatus == 3){
+                $('.signUpStatus').attr('src','images/sub_fail.png');
+            }
+            if(signUpStatus == 4){
+                $('.signUpStatus').attr('src','images/living.png');
+            }
+
+            //绑定数据到页面上
+            way.set('response',data);
+
+            //设置直播时间
+            var startTime = formatDate(data.start_time);
+            var endTime = formatDate(data.end_time);
+            endTime = endTime.substr(endTime.length-5);
+            var formatTime = startTime +'-' + endTime;
+            $('#issueTime').text(formatTime);
+
+            //直播详情报名
+            $('.announceDetail .signUp').on('click',function(){
+                $('.signModal,.modal').show();
+                stopMove();
+            });
+
+            var objId = data.live_active_num;
+            var objType = data.objType;
+            var intergral = data.intergral;
+            var is_need_audit = data.is_need_audit;
+            //点击报名弹框上面报名
+            $('.signModal .submit').on('click',function(){
+                $('.signModal').hide();
+                $.post({
+                    url:baseUrl + '/bank/minShengBank/signUp',
+                    contentType: "application/json; charset=utf-8",
+                    data:JSON.stringify({
+                        objId:objId,
+                        userId:userid,
+                        objType:objType,
+                        isNeedAudit:is_need_audit,
+                        intergral:intergral
+                    }),
+                    success:function(data){
+                        console.log(data);
+                        $('.signModal,.modal').hide();
+                        var data = data.data;
+                        console.log(data);
+                        if(data == 1){
+                            $('.failed h3').text('报名成功');
+                            $('.failed,.modal').show();
+                        }else if(data == 2){
+                            $('.failed h3').text('待审核');
+                            $('.failed,.modal').show();
+                        }else if(data == 3){
+                            $('.failed h3').text('名额已满');
+                            $('.failed,.modal').show();
+                        }else if(data == 4){
+                            $('.failed h3').text('审核未通过');
+                            $('.failed,.modal').show();
+                        }else if(data == 5){
+                            $('.failed h3').text('您的积分不足');
+                            $('.failed,.modal').show();
+                        }else if(data == 0){
+                            $('.failed h3').text('未报名');
+                            $('.failed,.modal').show();
+                        }
+                    },
+                    error:function(err){
+                        $('.failed').show();
+                        startMove();
+                        console.log(err);
+                    }
+                })
+            });
+        }
+    })
+}) 
+</script>
+</body>
+</html>

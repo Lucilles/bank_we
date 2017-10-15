@@ -21,12 +21,8 @@
     </style>
 </head>
 <body>
-    <header>
-        <a><img src="images/back.png" alt="" class='back'>领航</a>
-    </header>
-
 <div class="leadSainling">
-    <ul class='lead_icon content clearfix'>
+    <ul class='lead_icon clearfix'>
         <li><a href="">
             <img src="images/lead1.png" alt="">
             <p>党委党建</p>
@@ -53,131 +49,66 @@
         </a></li>
     </ul>
     <div class="courseList">
-        <div class="courseList_container required clearfix">
-            <h3 class='left'>党委党建</h3><h3 class='right'><a href=""><span>更多</span><img src="images/right.png" alt=""></a></h3>
+        <div class="courseList_container required clearfix"  way-repeat='leadSailing'>
+            <h3 class='left' way-data='course_group'></h3><h3 class='right'><a href="" class='more' way-data='moreURL'><span>更多</span><img src="images/right.png" alt=""></a></h3>
             <ul>
-                <li><a href="announceDetail.html">
-                    <img src="images/pic.jpg" alt="">
-                    <h4>银行高管综合研修项目</h4>
-                </a></li>
-                <li><a href="">
-                    <img src="images/pic.jpg" alt="">
-                    <h4>银行高管综合研修项目</h4>
-                </a></li>
-                <li><a href="">
-                    <img src="images/pic.jpg" alt="">
-                    <h4>银行高管综合研修项目</h4>
-                </a></li>
-            </ul>
-        </div>
-        <div class="courseList_container required clearfix">
-            <h3 class='left'>内控合规</h3><h3 class='right'><a href=""><span>更多</span><img src="images/right.png" alt=""></a></h3>
-            <ul>
-                <li><a href="announceDetail.html">
-                    <img src="images/pic.jpg" alt="">
-                    <h4>银行高管综合研修项目</h4>
-                </a></li>
-                <li><a href="">
-                    <img src="images/pic.jpg" alt="">
-                    <h4>银行高管综合研修项目</h4>
-                </a></li>
-                <li><a href="">
-                    <img src="images/pic.jpg" alt="">
-                    <h4>银行高管综合研修项目</h4>
-                </a></li>
-            </ul>
-        </div>
-        <div class="courseList_container required clearfix">
-            <h3 class='left'>领导力</h3><h3 class='right'><a href=""><span>更多</span><img src="images/right.png" alt=""></a></h3>
-            <ul>
-                <li><a href="announceDetail.html">
-                    <img src="images/pic.jpg" alt="">
-                    <h4>银行高管综合研修项目</h4>
-                </a></li>
-                <li><a href="">
-                    <img src="images/pic.jpg" alt="">
-                    <h4>银行高管综合研修项目</h4>
-                </a></li>
-                <li><a href="">
-                    <img src="images/pic.jpg" alt="">
-                    <h4>银行高管综合研修项目</h4>
-                </a></li>
-            </ul>
-        </div>
-        <div class="courseList_container required clearfix">
-            <h3 class='left'>金融前沿</h3><h3 class='right'><a href=""><span>更多</span><img src="images/right.png" alt=""></a></h3>
-            <ul>
-                <li><a href="announceDetail.html">
-                    <img src="images/pic.jpg" alt="">
-                    <h4>银行高管综合研修项目</h4>
-                </a></li>
-                <li><a href="">
-                    <img src="images/pic.jpg" alt="">
-                    <h4>银行高管综合研修项目</h4>
-                </a></li>
-                <li><a href="">
-                    <img src="images/pic.jpg" alt="">
-                    <h4>银行高管综合研修项目</h4>
-                </a></li>
-            </ul>
-        </div>
-        <div class="courseList_container required clearfix">
-            <h3 class='left'>名师论道</h3><h3 class='right'><a href=""><span>更多</span><img src="images/right.png" alt=""></a></h3>
-            <ul>
-                <li><a href="announceDetail.html">
-                    <img src="images/pic.jpg" alt="">
-                    <h4>银行高管综合研修项目</h4>
-                </a></li>
-                <li><a href="">
-                    <img src="images/pic.jpg" alt="">
-                    <h4>银行高管综合研修项目</h4>
-                </a></li>
-                <li><a href="">
-                    <img src="images/pic.jpg" alt="">
-                    <h4>银行高管综合研修项目</h4>
-                </a></li>
-            </ul>
-        </div>
-        <div class="courseList_container required clearfix">
-            <h3 class='left'>团队建设</h3><h3 class='right'><a href=""><span>更多</span><img src="images/right.png" alt=""></a></h3>
-            <ul>
-                <li><a href="announceDetail.html">
-                    <img src="images/pic.jpg" alt="">
-                    <h4>银行高管综合研修项目</h4>
-                </a></li>
-                <li><a href="">
-                    <img src="images/pic.jpg" alt="">
-                    <h4>银行高管综合研修项目</h4>
-                </a></li>
-                <li><a href="">
-                    <img src="images/pic.jpg" alt="">
-                    <h4>银行高管综合研修项目</h4>
+                <li><a href="" way-data='targetURL'>
+                    <img src="" alt="" way-data='course_img'>
+                    <h4 way-data='course_name'></h4>
                 </a></li>
             </ul>
         </div>
     </div>
 </div>
 
-
-
-
 <script src='js/jquery.min.js'></script>
-<script src='js/storage.js'></script>
-<script src='js/request.js'></script>
-<script src='js/jquery.uiAjaxPaging.js'></script>
-<script src='js/jquery-weui.js'></script>
 <script src='js/way.js'></script>
 <script src='js/common.js'></script> 
 
-
-
-
-
-
-
-
-
-
-
+<script>
+    $(function(){
+        //上面模块获取数据
+        $.get({
+            url:baseUrl + '/bank/getCourseController/getInitSail?parentPackId=2&userId='+userid,
+            success:function(data){
+                var data = data.data;
+                console.log(data);    
+                var moduleList = $('.lead_icon li');
+                for(var i = 0;i<data.length;i++){
+                    //模块绑定对应的链接，根据sortid绑定
+                    switch (data[i].pack_name){
+                        case '党委党建':
+                            $(moduleList[0]).find('a').attr('href',data[i].targetURL);
+                            continue;
+                        case '内控合规':
+                            $(moduleList[1]).find('a').attr('href',data[i].targetURL);
+                            continue;
+                        case '领导力':
+                            $(moduleList[2]).find('a').attr('href',data[i].targetURL);
+                            continue;
+                        case '金融前沿':
+                            $(moduleList[3]).find('a').attr('href',data[i].targetURL);
+                            continue;
+                        case '名师论道':
+                            $(moduleList[4]).find('a').attr('href',data[i].targetURL);
+                            continue;
+                        case '团队建设':
+                            $(moduleList[5]).find('a').attr('href',data[i].targetURL);
+                            continue;
+                    }
+                }
+            }
+        })
+        //下面部分同实战模拟的接口
+        $.post({
+            url:baseUrl + '/bank/getCourseController/getNewCourseList?parentPackId=2&userId='+userid,
+            success:function(data){
+                var data = data.data;
+                console.log(data);
+                way.set('leadSailing',data);
+            }
+        })
+    })
+</script>
 </body>
 </html>

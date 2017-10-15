@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>领航</title>
+    <title>远航</title>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
     <meta name="viewport" content="initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no">
     <meta http-equiv="Cache-Control" content="no-siteapp" />
@@ -16,54 +16,117 @@
     <link rel="stylesheet" href="css/common.css">
 </head>
 <body>
-<!--     <header>
-        <a><img src="images/back.png" alt="" class='back'>空白页</a>
-    </header> -->
-
 <div class="startSainling farSailing">
-<!-- 	<img src="images/leadSailing_bg.jpg" alt="" class='sailing_bg'> -->
+<img src="images/farSailing_bg.jpg" alt="" class='sailing_bg'>
     <!-- 导航栏 -->
     <div class='topbar'>
         <img src="images/head.jpg" alt="" class='head'>
         <span class='userName'>注册用户名</span>
-        <span class='stars'>999999</span>
+        <span class='stars' way-data='userIntergral.data'></span>
     </div>
 	<a href="" class='operation'>
         <img src="images/operation.png" alt="">
-        <img src="images/lock.png" alt="" class='lock'>
+        <img src="" alt="" class='lock'>
     </a>
-	<a href="" class='retail'>
-        <img src="images/retail.png" alt="" class='culture'>
-        <img src="images/lock.png" alt="" class='lock'>
+    <a href="" class='company'>
+        <img src="images/company.png" alt="">
+        <img src="" alt="" class='lock'>
+    </a>
+    <a href="" class='finacial'>
+        <img src="images/finacial.png" alt="">
+        <img src="" alt="" class='lock'>
     </a>
 	<a href="" class='department'>
         <img src="images/department.png" alt="">
-        <img src="images/lock.png" alt="" class='lock'>
+        <img src="" alt="" class='lock'>
     </a>
-	<a href="" class='finacial'>
-        <img src="images/finacial.png" alt="">
-        <img src="images/lock.png" alt="" class='lock'>
+    <a href="" class='retail'>
+        <img src="images/retail.png" alt="" class='culture'>
+        <img src="" alt="" class='lock'>
     </a>
-	<a href="" class='company'>
-        <img src="images/company.png" alt="">
-        <img src="images/lock.png" alt="" class='lock'>
-    </a>
+    <div>
     <a href="" class='strategy'><img src="images/Strategy.png" alt=""></a>
     <a href="" class='rank'><img src="images/rank.png" alt=""></a>
+    </div>
 </div>
 
-
-
-
-
-
-
 <script src='js/jquery.min.js'></script>
-<script src='js/storage.js'></script>
-<script src='js/request.js'></script>
-<script src='js/jquery.uiAjaxPaging.js'></script>
-<script src='js/jquery-weui.js'></script>
 <script src='js/way.js'></script>
 <script src='js/common.js'></script> 
+
+<script>
+    $(function(){
+        //获取用户积分
+        $.get({
+            url:baseUrl + '/bank/minShengBank/getUserIntergral?userId='+userid,
+            success:function(data){
+                console.log(data);
+                way.set('userIntergral',data);
+            }
+        })
+        //获取数据
+        $.get({
+            url:baseUrl + '/bank/getCourseController/getInitSail?parentPackId=1&userId='+userid,
+            success:function(data){
+                var data = data.data;
+                console.log(data);
+                //获取页面上的模块
+                var startList = $('.startSainling>a');
+                for(var i = 0;i<data.length;i++){
+
+                    //模块绑定对应的链接，根据sortid绑定并判断是否待开启
+                    switch (data[i].pack_id){
+                        case 7:
+                        console.log(data[i])
+                            if(data[i].status_img == ''){
+                                $('.company').attr('href',data[i].targetURL); 
+                            }else{
+                                $('.company').attr('href','#');
+                                $('.company img.lock').attr('src',data[i].status_img);
+                            }
+                            continue;
+                        case 8:
+                        console.log(data[i])
+                            if(data[i].status_img == ''){
+                                $('.finacial').attr('href',data[i].targetURL); 
+                            }else{
+                                $('.finacial').attr('href','#');
+                                $('.finacial img.lock').attr('src',data[i].status_img);
+                            }
+                            continue;
+                        case 9:
+                        console.log(data[i])
+                            if(data[i].status_img == ''){
+                                $('.department').attr('href',data[i].targetURL); 
+                            }else{
+                                $('.department').attr('href','#');
+                                $('.department img.lock').attr('src',data[i].status_img);
+                            }
+                            continue;
+                        case 10:
+                        console.log(data[i])
+                            if(data[i].status_img == ''){
+                                $('.retail').attr('href',data[i].targetURL); 
+                            }else{
+                                $('.retail').attr('href','#');
+                                $('.retail img.lock').attr('src',data[i].status_img);
+                            }
+                            continue;
+                        case 11:
+                        console.log(data[i])
+                            if(data[i].status_img == ''){
+                                $('.operation').attr('href',data[i].targetURL); 
+                            }else{
+                                $('.operation').attr('href','#');
+                                $('.operation img.lock').attr('src',data[i].status_img);
+                            }
+                            continue;
+                    }
+                }
+            }
+
+        })
+    })
+</script>
 </body>
 </html>

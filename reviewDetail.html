@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>课程名称</title>
+    <title>直播回顾</title>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
     <meta name="viewport" content="initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no">
     <meta http-equiv="Cache-Control" content="no-siteapp" />
@@ -13,21 +13,19 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="screen-orientation" content="portrait">
     <meta name="x5-orientation" content="portrait">
-    <link rel="stylesheet" href="css/common.css">
+	<link rel="stylesheet" href="css/common.css">
 </head>
 <body>
-    <div class="announceDetail reviewDetail courseDetail" way-scope='courseDetail'>
+    <div class="announceDetail reviewDetail" way-scope='reviewDetail'>
         <div class="top">
         <div class="imgContainer">
-            <a href="#" class='courseUrl'>
-<!--             <img src="images/play.png" alt="" class='play'> -->
-            <img src="images/play.png" alt="" class='play' style='display:none'>
-            <img src="" alt="" way-data='course_img'>
-            </a>
+            <img src="images/play.png" alt="" class='play'>
+            <img src="" alt="" way-data='img_url'>
         </div>
-        <h2 way-data="course_name"></h2>
-        <div class='submit signUp'>
-            <img src="images/submit.png" alt="" class='signUpStatus'>
+        <h2 way-data="live_active_name"><!-- 当金融遇到互联网 --></h2>
+        <div class="flexbox">
+            <div class="left"><span way-data="issuser_name"></span>(<span way-data="issuser_introduction"></span>)</div>
+            <div class="right" id="issueTime"></div>
         </div>
         <div class='operate'>
             <span class='view'><img src="images/view.png" alt=""><span way-data='view_sum'></span></span>
@@ -37,36 +35,16 @@
         </div>
         </div>
         <div class="tit">课程简介</div>
-        <div class="info" way-data="course_introduction"></div>
+        <div class="info" way-data="introduction"></div>
+        <div class="tit">讲师介绍</div>
+        <div class="flexbox mentor">
+            <div class='img'><img src="" alt="" way-data='issuser_imgURL'></div>
+            <div class="right">
+                <h3 way-data="teacher_name"></h3>
+                <p way-data="teacher_desc"></p>
+            </div>
+        </div>
     </div>
-
-
-    <!-- 报名框 -->
-<div class="modal"></div>
-<div class="signModal" way-scope='courseDetail'>
-    <h3>报名</h3>
-    <p>该课程需要消费您<span way-data='intergral'></span>积分</p>
-    <p>学完该课程您将获得<span way-data='learned_intergral'></span>积分</p>
-    <a class='submit'><img src="images/submit.png" alt=""></a>
-    <span class='modalClose'>x</span>
-</div>
-
-<!-- 提交成功弹框 -->
-<!-- <div class="submitedModal success">
-    <h3>报名已提交</h3>
-    <h3 class=''>等待审核</h3>
-    <span class='modalClose'>x</span>
-</div> -->
-
-<!-- 提交失败弹框 -->
-<div class="submitedModal failed">
-    <h3>您的积分不足，无法进行报名</h3>
-<!--     <h3 class=''>请稍后再试</h3> -->
-    <span class='modalClose'>x</span>
-</div>
-
-
-
 <script src='js/jquery.min.js'></script>
 <script src='js/storage.js'></script>
 <script src='js/request.js'></script>
@@ -76,88 +54,47 @@
 <script src='js/common.js'></script> 
 <script>
     $(function(){
-        var parentPackId = getQueryString('parentPackId');
-        $('.submit.signUp').hide();
-        //获取数据
+        var id = getQueryString('id');
         $.get({
-            url:baseUrl + '/bank/getCourseController/getCourseDetail?parentPackId='+parentPackId+'&userId=1',
+            url:baseUrl + '/bank/minShengBank/getLiveDetailsInfo?id=' + id+'&userId='+userid,
             success:function(data){
-                var data = data.data[0];
                 console.log(data);
-                way.set('courseDetail',data);
-                var courseId = data.course_id;
+                var data = data.data[0];
+                //如果没有发布人信息则不显示
+                if(data.issuser_name ==undefined){
+                    $('.announceDetail .top .flexbox').html('');
+                }
+
+                //为页面绑定数据
+                way.set('reviewDetail',data);
+
+                //跳转对应的课程评价页面
+                var liveActiveNum = data.live_active_num;
+                var liveActiveName = data.live_active_name;
+                var objType = data.objType;
+                var id = data.id;
+                var userNum = data.userNum;
+                var userName = data.userName;
+                var category = data.category;
+                console.log(userName);
+                console.log(liveActiveNum);
+                $('.toEvalute').attr('href','evalute.html?liveActiveNum='+liveActiveNum+'&id=' + id +'&objType=' + objType +'&categoryNum=' + category);
+
+                //转换并设置直播的开始和结束时间
+                var startTime = formatDate(data.start_time);
+                console.log('开始时间'+startTime);
+                var endTime = formatDate(data.end_time);
+                console.log('结束时间'+endTime);
+                endTime = endTime.substr(endTime.length-5);
+                var formatTime = startTime +'-' + endTime;
+                $('#issueTime').text(formatTime);
+
+                //获取当前页面id
+                var id = data.id;
+
+                console.log(id);
                 var thumpsUpStatus = data.thumpsUpStatus;
                 var collectionStatus = data.collectionStatus;
-                var objType = data.objType;
-                var isNeedAudit = data.is_need_audit;
-                var liveActiveNum = data.course_id;
-                //跳转评论页面
-                $('.toEvalute').attr('href','evalute.html?'+'&liveActiveNum=' + liveActiveNum +'&objType=' + objType);
-
-                //根据signUpstatus字段数据显示不同的报名状态
-                var signUpStatus = data.signUpStatus;
-                var courseUrl = data.courseURL;
-                console.log(courseUrl);
-                if(signUpStatus == 1){
-                    $('.play').show();
-                    $('.courseUrl').attr('href',courseUrl);
-                }else{
-                    $('.submit.signUp').show();
-                }
-
-                //课程名称报名
-                $('.courseDetail .signUp').on('click',function(){
-                    $('.signModal,.modal').show();
-                    stopMove();
-                });
-
-                //点击报名弹框上面报名
-                $('.signModal .submit').on('click',function(){
-                    //判断积分是否足够
-                    var intergral = data.intergral;
-                    $.post({
-                        url:baseUrl + '/bank/minShengBank/signUp',
-                        contentType: "application/json; charset=utf-8",
-                        data:JSON.stringify({
-                            objId:courseId,
-                            userId:userid,
-                            objType:objType,
-                            isNeedAudit:isNeedAudit,
-                            intergral:intergral
-                        }),
-                        success:function(data){
-                            var data = data.data;
-                            console.log(data);
-                            $('.signModal,.modal').hide();
-                            if(data == 1){
-                                $('.failed h3').text('报名成功');
-                            }else if(data == 2){
-                                $('.failed h3').text('待审核');
-                            }else if(data == 3){
-                                $('.failed h3').text('名额已满');
-                            }else if(data == 4){
-                                $('.failed h3').text('审核未通过');
-                            }else if(data == 5){
-                                $('.failed h3').text('您的积分不足');
-                            }else if(data == 0){
-                                $('.failed h3').text('未报名'); 
-                            }
-                            $('.failed,.modal').show();
-                        }
-                    })
-                });
-
-
-                //判断是否收藏此课程
-                var collectImg = $('.collect img');
-                if(data.collectionStatus == 1){
-                    collectImg.attr('src','images/collected.png');
-                    collectImg.siblings().text('已收藏');
-                }else{
-                    collectImg.attr('src','images/collect.png');
-                    collectImg.siblings().text('收藏');
-                }
-
                 //直播回顾收藏
                 if(collectionStatus == 1){
                     $('.collect img').attr('src','images/collected.png');
@@ -176,7 +113,7 @@
                             contentType: "application/json; charset=utf-8",
                             data:JSON.stringify({
                                 userId:userid,
-                                objId:courseId,
+                                objId:liveActiveNum,
                                 objType:objType,
                                 collectionStatus:collectionStatus,
                             }),
@@ -190,28 +127,28 @@
                         })
                         
                     }else{
-                        var that = this;
+                        var tha = this;
                         collectionStatus = 0;
                         $.post({
                             url:baseUrl+'/bank/minShengBank/collection',
                             contentType: "application/json; charset=utf-8",
                             data:JSON.stringify({
                                 userId:userid,
-                                objId:courseId,
+                                objId:liveActiveNum,
                                 objType:objType,
                                 collectionStatus:collectionStatus,
                             }),
                             success:function(data){
                                 console.log(data);
                                 if(data.msg == '请求数据成功!'){
-                                    $(that).addClass('collected').find('img').attr('src','images/collected.png');
+                                    $(tha).addClass('collected').find('img').attr('src','images/collected.png');
                                     $('.collect span').text('已收藏');
                                 }
                             }
                         })
                     }
                 })
-
+                var thumpsUpStatus = data.thumpsUpStatus;
                 //直播回顾点赞
                 if(thumpsUpStatus == 1){
                     $('.love img').attr('src','images/loved.png');
@@ -221,7 +158,6 @@
                 }
                 $('.reviewDetail .love').on('click',function(){
                     var thumbsUpSum = parseInt($(this).find('.loveNum').text());
-                    var thumpsUpStatus;
                     if($(this).hasClass('loved')){
                           thumpsUpStatus = 1;
                           var that = this;
@@ -230,7 +166,7 @@
                             contentType: "application/json; charset=utf-8",
                             data:JSON.stringify({
                                 userId:userid,
-                                objId:courseId,
+                                objId:liveActiveNum,
                                 objType:objType,
                                 thumpsUpStatus:thumpsUpStatus,
                             }),
@@ -245,13 +181,14 @@
                         })
                     }else{
                         var that = this;
+                        console.log(that);
                         thumpsUpStatus = 0;
                         $.post({
                             url:baseUrl + '/bank/minShengBank/thumbsUp',
                             contentType: "application/json; charset=utf-8",
                             data:JSON.stringify({
                                 userId:userid,
-                                objId:courseId,
+                                objId:liveActiveNum,
                                 objType:objType,
                                 thumpsUpStatus:thumpsUpStatus,
                             }),
@@ -266,18 +203,9 @@
                         })
                     }
                 })
-
-
-
             }
-        })
+        });
     })
-</script>
-<script>
-
-
-
-
 </script>
 </body>
 </html>

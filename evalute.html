@@ -18,15 +18,9 @@
     <link rel="stylesheet" href="css/weui.min.css">
 </head>
 <body>
-	<header>
-        <a><img src="images/back.png" alt="" class='back'>评论</a>
-    </header>
-      <div class="content evalute" style=no>
+      <div class="evalute" style=no>
           <textarea name="" id="" cols="30" rows="5" placeholder='请输入评论内容' class='evaluteContainer'></textarea>
           <p class='evalute'>
-<!--             <a class='submit cancel_evalute'>
-              <img src="images/cancel_evalute.png" alt="">
-            </a> -->
             <a class='submit submit_evalute'>
               <img src="images/submit_evalute.png" alt="">
             </a>
@@ -35,9 +29,9 @@
           <div id="responsive-grid" class='responsive-grid'>
               <ul class='evaluteList'>
                   <li way-repeat='evalutes'>
-                      <p class='clearfix'><span class='left name' way-data='userName'></span><span class='right time'>发表于<span way-data='commentTime'></span></span></p>
-                      <p class='evalueInfo' way-data='commentContent'></p>
-                      <p class='agree'><img src="images/love.png" alt=""><span way-data='commentThumbsUp' class='loveNum'></span></p>
+                      <p class='clearfix'><span class='left name' way-data='user_name'></span><span class='right time'>发表于<span way-data='comment_time'></span></span></p>
+                      <p class='evalueInfo' way-data='comment_msg'></p>
+                      <p class='agree'><img src="images/love.png" alt=""><span way-data='thumps_up_sum' class='loveNum'></span></p>
                   </li>
               </ul>
         </div>
@@ -63,31 +57,91 @@ $(function(){
   var liveActiveNum = getQueryString('liveActiveNum');
   var liveActiveName = decodeURI(getQueryString('liveActiveName'));
   var category = getQueryString('categoryNum');
-
+  var objType = getQueryString('objType');
+  var commentList = $('.evaluteList li');
 
   //取消评论
   $('.cancel_evalute').on('click',function(){
       $('.evaluteContainer').val('');
   });
-
 var ajaxpaging = $.ajaxPaging({
       listloaded: 'weui-loadmore',
       pageSize: 20,
       url: '/bank/minShengBank/getComment',
-      params: {liveActiveNum:liveActiveNum},
+      params: {liveActiveNum:liveActiveNum,objType:objType,userId:userid},
       pagerSuccessCallback: function (data, total) {
+        console.log(data);
           for(var i = 0;i<data.length;i++){
-              data[i].commentTime = formatDate(data[i].commentTime);
+              data[i].comment_time = formatDate(data[i].comment_time);
               //如果点赞数为空则设置为0
               if(data[i].commentThumbsUp == 'undefined' || !data[i].commentThumbsUp){
                   data[i].commentThumbsUp = 0;
               }
               listdata.push(data[i]);
-              console.log(data[i].userName)
           }
-          console.log('我是数据：' +JSON.stringify(data));
           way.set('evalutes',listdata);
+          var loveNum = $('.evaluteList li');
+          console.log(loveNum);
+          for(var i = 0;i<loveNum.length;i++){
+              if(data[i].thumpsUpStatus == 1){
+                  $(loveNum[i]).find('.agree img').attr('src','images/loved.png');
+                  $(loveNum[i]).find('.agree').addClass('loved');
+              }else{
+                  $(loveNum[i]).find('.agree img').attr('src','images/love.png');      
+              }
+          }
+              //设置点赞功能
 
+          loveNum.on('click',function(){
+                console.log('ddd')
+                  var agree = $(this).find('.agree'); 
+                  var index = $(this).index();
+                  var thumbsUpSum = parseInt(agree.find('.loveNum').text());
+                        if(agree.hasClass('loved')){
+                              thumpsUpStatus = 1;
+                              $.post({
+                                url:baseUrl + '/bank/minShengBank/thumbsUp',
+                                contentType: "application/json; charset=utf-8",
+                                data:JSON.stringify({
+                                    userId:userid,
+                                    objId:data[index].id,
+                                    objType:data[index].objType,
+                                    thumpsUpStatus:thumpsUpStatus,
+                                }),
+                                success:function(data){
+                                    console.log(data);
+                                    if(data.msg == '请求数据成功!'){
+                                      agree.removeClass('loved').find('img').attr('src','images/love.png');
+                                      thumbsUpSum -= 1;
+                                      if(thumbsUpSum <= 0){
+                                        thumbsUpSum = 0;
+                                      }
+                                      agree.find('.loveNum').text(thumbsUpSum);                    
+                                    }
+                                }
+                            })
+                        }else{
+                            thumpsUpStatus = 0;
+                            $.post({
+                                url:baseUrl + '/bank/minShengBank/thumbsUp',
+                                contentType: "application/json; charset=utf-8",
+                                data:JSON.stringify({
+                                    userId:userid,
+                                    objId:data[index].id,
+                                    objType:data[index].objType,
+                                    thumpsUpStatus:thumpsUpStatus,
+                                }),
+                                success:function(data){
+                                    console.log(data);
+                                    if(data.msg == '请求数据成功!'){
+                                        agree.addClass('loved').find('img').attr('src','images/loved.png');
+                                          thumbsUpSum += 1;
+                                          agree.find('.loveNum').text(thumbsUpSum);                            
+                                    }
+                                }
+                            })
+                        }
+              })
 
 
           //提交评论内容
@@ -98,15 +152,13 @@ var ajaxpaging = $.ajaxPaging({
                 if(content !== ''){
                   $.post({
                       url:baseUrl + '/bank/minShengBank/commentContent',
-                      data:{
-                        id:id,
-                        userid:userid,
-                        name:name,
-                        commentContent:content,
-                        liveActiveNum:liveActiveNum,
-                        liveActiveName:liveActiveName,
-                        commentUserid:commentUserid
-                      },
+                      contentType: "application/json; charset=utf-8",
+                      data:JSON.stringify({
+                          userId:userid,
+                          objId:liveActiveNum,
+                          objType:objType,
+                          commentMsg:content,
+                      }),
                       success:function(data){
                         $('.evaluteContainer').val('');
                         alert('评论成功');
@@ -115,43 +167,8 @@ var ajaxpaging = $.ajaxPaging({
                   })
                 }
           });
-          //设置点赞功能
-          var loveNum = $('.evaluteList li');
-          loveNum.on('click',function(){
-            var agree = $(this).find('.agree'); 
-              var index = $(this).index();
-              console.log(data[index].userName);
-              var thumbsUpSum = parseInt(agree.find('.loveNum').text());
-              console.log(thumbsUpSum);
-              if(agree.hasClass('loved')){
-                  agree.removeClass('loved').find('img').attr('src','images/love.png');
-                  thumbsUpSum -= 1;
-                  agree.find('.loveNum').text(thumbsUpSum);
-              }else{
-                  var that = this;
-                  $.post({
-                       url:baseUrl + '/bank/minShengBank/userCommentThumbsUp',
-                        data:{
-                        categoryNum : category,
-                        liveActiveNum : data[index].liveActiveNum,
-                        liveActiveName : data[index].liveActiveName,
-                        userid : userid,
-                        name:name,
-                        commentUserid:data[index].commentUserid,
-                        commentUserName:data[index].commentUserName
-                        },
-                      success:function(data){
-                          console.log(data);
-                          if(data.msg == '请求数据成功!'){
-                              agree.addClass('loved').find('img').attr('src','images/loved.png');
-                              thumbsUpSum += 1;
-                              console.log($(that).find('.loveNum').text());
-                              agree.find('.loveNum').text(thumbsUpSum);
-                          }
-                      }
-                  })
-              }
-          })
+
+
       }
   });
 
