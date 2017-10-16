@@ -255,9 +255,9 @@ letter-spacing: -0.5px;
 }
 
 /*直播回顾*/
-/*.review{
-	padding-top: .7rem;
-}*/
+.review{
+	padding-top: .15rem;
+}
 .review li{
 	padding:0 5%;
 	margin-bottom: .12rem;

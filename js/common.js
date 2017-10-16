@@ -108,6 +108,7 @@ $('.modalClose').on('click',function(){
     $(this).parent().hide();
     startMove();
     $('.modal').hide();
+    window.location.reload();
 })
 
 //获取屏幕的高度

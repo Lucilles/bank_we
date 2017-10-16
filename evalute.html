@@ -39,6 +39,7 @@
       </div>
     </div>
 <script src='js/jquery.min.js'></script>
+<script src='js/jquery.cookie.js'></script>
 <script src='js/storage.js'></script>
 <script src='js/request.js'></script>
 <script src='js/jquery.uiAjaxPaging.js'></script>
@@ -163,6 +164,7 @@ var ajaxpaging = $.ajaxPaging({
                         $('.evaluteContainer').val('');
                         alert('评论成功');
                         console.log(data);
+                        window.location.reload();
                       }
                   })
                 }
